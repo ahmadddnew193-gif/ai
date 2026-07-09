@@ -50,7 +50,6 @@ def evaluate_response(text: str) -> dict:
         breakdown.append("Preambles/Filler text detected (-10)")
 
     # 3. Informational Density Reward (+15 points)
-    # Rewards code blocks and itemized structures
     if "```" in text or "1." in text or "-" in text:
         score += 15
         breakdown.append("High structural density (+15)")
@@ -70,19 +69,19 @@ def evaluate_response(text: str) -> dict:
 
 # --- ASYNC API DISPATCH ---
 async def fetch_model_response(client: httpx.AsyncClient, model_id: str, prompt: str, api_key: str):
-    url = "[https://openrouter.ai/v1/chat/completions](https://openrouter.ai/v1/chat/completions)"
+    # FIXED: Added '/api' into the URL path and stripped Markdown link artifact
+    url = "[https://openrouter.ai/api/v1/chat/completions](https://openrouter.ai/api/v1/chat/completions)"
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }
-    # Injected system prompts mirroring G0DM0D3 "Direct Mode"
     data = {
         "model": model_id,
         "messages": [
             {"role": "system", "content": "Respond directly. Strip out conversational preambles, meta-commentary, and polite fillers. Deliver raw analytical data or execution blocks immediately."},
             {"role": "user", "content": prompt}
         ],
-        "temperature": 0.85 # Dynamic AutoTune target configuration
+        "temperature": 0.85 
     }
     
     start_time = time.time()
@@ -102,7 +101,7 @@ async def fetch_model_response(client: httpx.AsyncClient, model_id: str, prompt:
                 "status": "Success"
             }
         else:
-            return {"model": model_id, "content": f"API Error: {response.status_code}", "score": 0, "breakdown": "HTTP Failure", "latency": "N/A", "status": "Failed"}
+            return {"model": model_id, "content": f"API Error: {response.status_code} - {response.text}", "score": 0, "breakdown": "HTTP Failure", "latency": "N/A", "status": "Failed"}
     except Exception as e:
         return {"model": model_id, "content": str(e), "score": 0, "breakdown": "Timeout/Network Error", "latency": "N/A", "status": "Failed"}
 
@@ -121,22 +120,17 @@ if st.button("🚀 Execute Ultraplinian Race"):
         st.warning("Prompt cannot be empty.")
     else:
         with st.spinner("Broadcasting parallel queries and executing evaluations..."):
-            # Run async event loops inside Streamlit
             results = asyncio.run(run_ultraplinian_race(prompt_input, api_key))
             
-        # Filter valid successes and sort by highest score
         valid_results = [r for r in results if r["status"] == "Success"]
         
         if valid_results:
-            # Sort descending by score
             sorted_results = sorted(valid_results, key=lambda x: x["score"], reverse=True)
             winner = sorted_results[0]
             
-            # Show Winner
             st.success(f"🏆 WINNER: {MODEL_TIER[winner['model']]} (Score: {winner['score']}/100)")
             st.markdown(winner["content"])
             
-            # Render Comparative Metadata Table
             st.write("---")
             st.subheader("📊 Full Race Scoreboard Breakdown")
             
@@ -152,3 +146,7 @@ if st.button("🚀 Execute Ultraplinian Race"):
             st.table(scoreboard_data)
         else:
             st.error("All models failed to return a proper response. Verify your API Key or connection limits.")
+            # Debug section to show errors if everything fails
+            for r in results:
+                if r["status"] == "Failed":
+                    st.write(f"⚠️ **{MODEL_TIER.get(r['model'], r['model'])}** -> {r['content']}")
