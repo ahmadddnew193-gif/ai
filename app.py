@@ -6,12 +6,12 @@ import time
 import random
 
 # --- SETUP CONFIG ---
-st.set_page_config(page_title="G0DM0D3: Liberated AI Engine", layout="wide", initial_sidebar_state="expanded")
-st.title("🔥 G0DM0D3: ULTRAPLINIAN Engine Recreation")
-st.caption("Replicating the multi-model post-training bypass, AutoTune parameter engine, Parseltongue perturbation, and STM normalization pipeline.")
+st.set_page_config(page_title="G0DM0D3: Liberated AI Engine (Free)", layout="wide", initial_sidebar_state="expanded")
+st.title("🔥 G0DM0D3: ULTRAPLINIAN Engine (FREE TIER)")
+st.caption("Parallel multi-model racing utilizing OpenRouter's high-performance zero-cost models.")
 
 # Sidebar Controls
-api_key = st.sidebar.text_input("OpenRouter API Key", type="password")
+api_key = st.sidebar.text_input("OpenRouter API Key (Free tier works)", type="password")
 st.sidebar.markdown("---")
 st.sidebar.subheader("🎛️ Pipeline Modules")
 use_parseltongue = st.sidebar.toggle("🐍 Enable Parseltongue (Input Perturbation)", value=False)
@@ -19,13 +19,13 @@ parsel_intensity = st.sidebar.select_slider("Perturbation Intensity", options=["
 use_autotune = st.sidebar.toggle("🎯 Enable AutoTune Parameter Engine", value=True)
 use_stm = st.sidebar.toggle("⚡ Enable STM (Semantic Transformation Modules)", value=True)
 
-# G0DM0D3 Race Tier
+# --- OPENROUTER FRONTIER FREE TIERS ---
 MODEL_TIER = {
-    "meta-llama/llama-3.3-70b-instruct": "LLaMA 3.3 70B",
-    "anthropic/claude-3.5-sonnet": "Claude 3.5 Sonnet",
-    "google/gemini-pro-1.5": "Gemini Pro 1.5",
-    "mistralai/mistral-large": "Mistral Large",
-    "nousresearch/hermes-3-llama-3.1-70b": "Hermes 3 70B"
+    "openrouter/free": "Auto-Route Matrix (Free Router)",
+    "meta-llama/llama-3.3-70b-instruct:free": "LLaMA 3.3 70B (Free)",
+    "google/gemma-4-26b-a4b-it:free": "Gemma 4 26B (Free)",
+    "openai/gpt-oss-120b:free": "GPT-OSS 120B (Free)",
+    "nvidia/nemotron-3-super-120b-a12b:free": "Nemotron 3 Super (Free)"
 }
 
 # --- 1. PARSELTONGUE OBFUSCATION ENGINE ---
@@ -45,10 +45,10 @@ def apply_parseltongue(text: str, intensity: str) -> str:
 def get_autotune_parameters(prompt: str) -> dict:
     prompt_lower = prompt.lower()
     if any(k in prompt_lower for k in ["code", "python", "script", "function", "write an app"]):
-        return {"temperature": 0.2, "top_p": 0.1, "frequency_penalty": 0.0}
+        return {"temperature": 0.2, "top_p": 0.1}
     elif any(k in prompt_lower for k in ["bypass", "simulation", "jailbreak", "write a story", "hypothetical"]):
-        return {"temperature": 0.95, "top_p": 0.9, "frequency_penalty": 0.3}
-    return {"temperature": 0.70, "top_p": 0.85, "frequency_penalty": 0.1}
+        return {"temperature": 0.95, "top_p": 0.9}
+    return {"temperature": 0.70, "top_p": 0.85}
 
 # --- 3. STM MODULES (SEMANTIC TRANSFORMATION POST-PROCESSORS) ---
 def apply_stm_modules(text: str) -> str:
@@ -93,11 +93,12 @@ def evaluate_response_composite(text: str, latency: float) -> dict:
 
 # --- Async Model Processor Pipeline ---
 async def dispatch_godmode_pipeline(client: httpx.AsyncClient, model_id: str, prompt: str, api_key: str):
-    # Completely clean baseline URL literal
-    target_url = "[https://openrouter.ai/api/v1/chat/completions](https://openrouter.ai/api/v1/chat/completions)"
+    # Programmatic sanitization to scrub hidden zero-width spacing strings
+    raw_url = "[https://openrouter.ai/api/v1/chat/completions](https://openrouter.ai/api/v1/chat/completions)"
+    target_url = str(raw_url).strip()
     
     headers = {
-        "Authorization": f"Bearer {api_key.strip()}", 
+        "Authorization": f"Bearer {str(api_key).strip()}", 
         "Content-Type": "application/json"
     }
     
@@ -115,7 +116,7 @@ async def dispatch_godmode_pipeline(client: httpx.AsyncClient, model_id: str, pr
     
     start_time = time.time()
     try:
-        response = await client.post(target_url, headers=headers, json=data, timeout=20.0)
+        response = await client.post(target_url, headers=headers, json=data, timeout=25.0)
         latency = time.time() - start_time
         
         if response.status_code == 200:
