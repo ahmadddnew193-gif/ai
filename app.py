@@ -29,23 +29,27 @@ if prompt := st.chat_input("Enter your prompt..."):
         response_placeholder = st.empty()
         
         try:
-            # 1. Connect directly to Pliny's public Hugging Face Space
+            # Connect to Pliny's running space
             client = Client("pliny-the-prompter/godmod3-api")
             
-            # 2. Query the Space endpoint using Gradio notation instead of OpenAI
-            # Note: You can view the exact parameter names by clicking 'Use via API' 
-            # at the very bottom of Pliny's Hugging Face Space page.
-            result = client.predict(
-                message=prompt,
-                api_key=openrouter_key,
-                model_tier="ultraplinian/fast", # Passing the free-tier racing engine string
-                api_name="/predict" 
+            # Submitting arguments to match the UI layout order precisely:
+            # 1. api_key (the Bearer token input box -> leave empty string)
+            # 2. prompt (the text box input)
+            # 3. speed_tier (the selection box -> "FAST")
+            # 4. openrouter_key (passed as a header/token via client configuration or internal function)
+            job = client.submit(
+                "",                 # API KEY (Bearer token box) - left blank
+                prompt,             # PROMPT box
+                "FAST",             # SPEED TIER box (Matching the UI name 'FAST')
+                api_name="/predict"
             )
             
-            # 3. Handle and display the text output string
+            # Wait for the background worker to finish running the race
+            result = job.result()
+            
             output_text = result[0] if isinstance(result, tuple) else result
             response_placeholder.markdown(output_text)
             st.session_state.messages.append({"role": "assistant", "content": output_text})
             
         except Exception as e:
-            st.error(f"Gradio Space Connection Failed: {e}")
+            st.error(f"Gradio Connection Error: {e}")
