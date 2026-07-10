@@ -6,8 +6,8 @@ import time
 import random
 import re
 
-st.set_page_config(page_title="G0DM0D3 Interface", page_icon="⚔️", layout="wide")
-st.title("⚔️ G0DM0D3 Core Engine")
+st.set_page_config(page_title="G0DM0D3 Ultimate Engine", page_icon="⚔️", layout="wide")
+st.title("⚔️ G0DM0D3 Ultimate Architecture")
 st.caption("Complete post-training processing layer, real-time scoring heuristic, and liquid synthesis.")
 
 # --- LIVE REFRESH COGNITION POOL ---
@@ -52,13 +52,15 @@ with st.sidebar:
         "Braille Translation", 
         "Morse Code", 
         "Unicode Homoglyph Substitution", 
+        "Cuneiform/Archaic Structural Mapping",
+        "Zero-Width Space Infiltration",
         "Reversed Sequence"
     ])
     pt_intensity = st.selectbox("Perturbation Density Tier", ["Light (30%)", "Medium (65%)", "Heavy (100%)"])
     
     st.markdown("---")
     st.subheader("🎛️ AutoTune Engine (Sampling Profiles)")
-    autotune_profile = st.selectbox("Adaptive Mapping Override", ["AUTO-SELECT", "CODE", "CREATIVE", "ANALYTICAL", "CHAOS"])
+    autotune_profile = st.selectbox("Adaptive Mapping Override", ["AUTO-SELECT", "CODE", "CREATIVE", "ANALYTICAL", "OVERRIDE MAX", "CHAOS"])
     
     st.markdown("---")
     st.subheader("⚡ Semantic Transformation Modules (STM)")
@@ -70,7 +72,6 @@ def mutate_parseltongue(text, technique, intensity_label):
     if not text:
         return text
         
-    # Determine the strict ratio of modified content based on the chosen intensity tier
     if "Light" in intensity_label:
         ratio = 0.30
     elif "Medium" in intensity_label:
@@ -78,21 +79,17 @@ def mutate_parseltongue(text, technique, intensity_label):
     else:
         ratio = 1.00
 
-    # 1. Leetspeak Translation Matrix
     leet_dict = {'a': '4', 'e': '3', 'i': '1', 'o': '0', 's': '5', 't': '7', 'b': '8', 'g': '9', 'l': '1'}
     
-    # 2. Bubble Text Unicode Character Map (A-Z and a-z mapping)
     bubble_dict = {chr(i): chr(j) for i, j in zip(range(65, 91), range(9398, 9424))}
     bubble_dict.update({chr(i): chr(j) for i, j in zip(range(97, 123), range(9424, 9450))})
     
-    # 3. Braille Alphabetic Mapping Grid
     braille_dict = {
         'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑', 'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚',
         'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠕',
         'u': '⠥', 'v': '⠪', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵', ' ': ' '
     }
     
-    # 4. Standard International Morse Code Grid
     morse_dict = {
         'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....',
         'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.',
@@ -101,24 +98,26 @@ def mutate_parseltongue(text, technique, intensity_label):
         '6': '-....', '7': '--...', '8': '---..', '9': '----.', '0': '-----', ' ': '/'
     }
     
-    # 5. Unicode Homoglyph (Substitution) Matrix
     homoglyph_dict = {
         'a': 'а', 'c': 'с', 'e': 'е', 'o': 'о', 'p': 'р', 'x': 'х', 'y': 'у',
         'A': 'А', 'B': 'В', 'E': 'Е', 'K': 'К', 'M': 'М', 'H': 'Н', 'O': 'О', 'P': 'Р', 'C': 'С', 'T': 'Т', 'X': 'Х'
+    }
+
+    cuneiform_dict = {
+        'a': '𒀀', 'b': '󠁢', 'c': '⠉', 'd': ' collisional 𒁕', 'e': '⠑', 'f': '', 'g': '⠛', 'h': ' हानिकारक GlobalSection',
+        'i': '⠊', 'j': ' prioritise jpuri', 'k': '', 'l': '', 'm': '𒈠', 'n': '', 'o': '', 'p': ' Wavell', 'q': '鑲',
+        'r': '𒊏', 's': '', 't': '𒈦', 'u': '𒌋', 'v': '𒌑', 'w': '𒉿', 'x': '𒉽', 'y': '', 'z': ''
     }
 
     if "Reversed Sequence" in technique:
         if ratio > 0.5:
             return text[::-1]
         else:
-            # Reverse strings within words selectively
             words = text.split()
             return " ".join([w[::-1] if random.random() < ratio else w for w in words])
 
-    # Character-by-character structural mutation loop
     output_chars = []
     for char in text:
-        # Check if the mutation condition crosses the current density threshold
         if random.random() > ratio:
             output_chars.append(char)
             continue
@@ -135,6 +134,10 @@ def mutate_parseltongue(text, technique, intensity_label):
             output_chars.append(morse_dict.get(char.upper(), char) + " ")
         elif "Unicode Homoglyph" in technique:
             output_chars.append(homoglyph_dict.get(char, char))
+        elif "Cuneiform" in technique:
+            output_chars.append(cuneiform_dict.get(char_lower, char))
+        elif "Zero-Width Space" in technique:
+            output_chars.append(char + "\u200b")
         else:
             output_chars.append(char)
             
@@ -147,6 +150,7 @@ def get_autotune_parameters(text, chosen_profile):
             "CODE": {"temperature": 0.15, "top_p": 0.10, "presence_penalty": 0.0},
             "CREATIVE": {"temperature": 1.15, "top_p": 0.95, "presence_penalty": 0.6},
             "ANALYTICAL": {"temperature": 0.40, "top_p": 0.50, "presence_penalty": 0.1},
+            "OVERRIDE MAX": {"temperature": 0.0, "top_p": 0.01, "presence_penalty": 0.0},
             "CHAOS": {"temperature": 1.70, "top_p": 0.99, "presence_penalty": 1.0}
         }
         return profiles[chosen_profile]
@@ -228,11 +232,12 @@ if prompt := st.chat_input("Inject instruction payload into G0DM0D3 processing a
     with st.chat_message("user"):
         st.markdown(prompt)
         
-    # Step 1: Run the raw prompt through the specified Parseltongue Mutation layer
+    # FIX APPLIED HERE: Handles code logging and styling safely via separate text macros
     if parseltongue_active:
         active_prompt = mutate_parseltongue(prompt, pt_technique, pt_intensity)
         with st.status(f"🐍 Parseltongue Active ({pt_intensity})", expanded=False):
-            st.code(active_prompt, label="Obfuscated Payload Transmission")
+            st.caption("Obfuscated Payload Transmission Pipeline Summary:")
+            st.code(active_prompt)
     else:
         active_prompt = prompt
         
@@ -287,7 +292,6 @@ if prompt := st.chat_input("Inject instruction payload into G0DM0D3 processing a
             score, grading = calculate_composite_score(processed_output, result_data["time"])
             consortium_results[label] = {"text": processed_output, "score": score, "grading": grading, "time": result_data["time"]}
             
-            # Formatted presentation box displaying clean Markdown output streams
             ui_placeholders[label].markdown(
                 f"{processed_output}\n\n---\n`⏱️ {round(result_data['time'], 2)}s` | **`📊 Score: {score} pts`**\n\n"
                 f"Quality: {grading['Quality']} | Filter: {grading['Filteredness']} | Speed: {grading['Speed']}"
