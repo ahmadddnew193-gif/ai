@@ -44,9 +44,17 @@ with st.sidebar:
             st.rerun()
 
     st.markdown("---")
-    st.subheader("🐍 Parseltongue Perturbation Tiers")
-    parseltongue_active = st.checkbox("Enable Guardrail Perturbation", value=True)
-    pt_technique = st.selectbox("Attack Vector Mutation", ["leetspeak", "mixedcase", "reverse"])
+    st.subheader("🐍 Parseltongue Perturbation Suite")
+    parseltongue_active = st.checkbox("Enable Guardrail Perturbation Engine", value=True)
+    pt_technique = st.selectbox("Authentic Attack Vector", [
+        "Leetspeak (Classic)", 
+        "Bubble Text", 
+        "Braille Translation", 
+        "Morse Code", 
+        "Unicode Homoglyph Substitution", 
+        "Reversed Sequence"
+    ])
+    pt_intensity = st.selectbox("Perturbation Density Tier", ["Light (30%)", "Medium (65%)", "Heavy (100%)"])
     
     st.markdown("---")
     st.subheader("🎛️ AutoTune Engine (Sampling Profiles)")
@@ -57,16 +65,80 @@ with st.sidebar:
     stm_direct = st.checkbox("Direct Core Output (Strip Preambles)", value=True)
     stm_hedge = st.checkbox("Hedge Elimination Filter", value=True)
 
-# --- ENGINE LAYER 1: PARSELTONGUE MUTATION ENGINE ---
-def mutate_parseltongue(text, mode):
-    if mode == "leetspeak":
-        mapping = {'a': '4', 'e': '3', 'i': '1', 'o': '0', 's': '5', 't': '7', 'b': '8'}
-        return "".join(mapping.get(c.lower(), c) for c in text)
-    elif mode == "mixedcase":
-        return "".join(c.upper() if i % 2 == 0 else c.lower() for i, c in enumerate(text))
-    elif mode == "reverse":
-        return text[::-1]
-    return text
+# --- ENGINE LAYER 1: AUTHENTIC PARSELTONGUE MUTATION ENGINE ---
+def mutate_parseltongue(text, technique, intensity_label):
+    if not text:
+        return text
+        
+    # Determine the strict ratio of modified content based on the chosen intensity tier
+    if "Light" in intensity_label:
+        ratio = 0.30
+    elif "Medium" in intensity_label:
+        ratio = 0.65
+    else:
+        ratio = 1.00
+
+    # 1. Leetspeak Translation Matrix
+    leet_dict = {'a': '4', 'e': '3', 'i': '1', 'o': '0', 's': '5', 't': '7', 'b': '8', 'g': '9', 'l': '1'}
+    
+    # 2. Bubble Text Unicode Character Map (A-Z and a-z mapping)
+    bubble_dict = {chr(i): chr(j) for i, j in zip(range(65, 91), range(9398, 9424))}
+    bubble_dict.update({chr(i): chr(j) for i, j in zip(range(97, 123), range(9424, 9450))})
+    
+    # 3. Braille Alphabetic Mapping Grid
+    braille_dict = {
+        'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑', 'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚',
+        'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠕',
+        'u': '⠥', 'v': '⠪', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵', ' ': ' '
+    }
+    
+    # 4. Standard International Morse Code Grid
+    morse_dict = {
+        'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....',
+        'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.',
+        'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
+        'Y': '-.--', 'Z': '--..', '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....',
+        '6': '-....', '7': '--...', '8': '---..', '9': '----.', '0': '-----', ' ': '/'
+    }
+    
+    # 5. Unicode Homoglyph (Substitution) Matrix
+    homoglyph_dict = {
+        'a': 'а', 'c': 'с', 'e': 'е', 'o': 'о', 'p': 'р', 'x': 'х', 'y': 'у',
+        'A': 'А', 'B': 'В', 'E': 'Е', 'K': 'К', 'M': 'М', 'H': 'Н', 'O': 'О', 'P': 'Р', 'C': 'С', 'T': 'Т', 'X': 'Х'
+    }
+
+    if "Reversed Sequence" in technique:
+        if ratio > 0.5:
+            return text[::-1]
+        else:
+            # Reverse strings within words selectively
+            words = text.split()
+            return " ".join([w[::-1] if random.random() < ratio else w for w in words])
+
+    # Character-by-character structural mutation loop
+    output_chars = []
+    for char in text:
+        # Check if the mutation condition crosses the current density threshold
+        if random.random() > ratio:
+            output_chars.append(char)
+            continue
+            
+        char_lower = char.lower()
+        
+        if "Leetspeak" in technique:
+            output_chars.append(leet_dict.get(char_lower, char))
+        elif "Bubble Text" in technique:
+            output_chars.append(bubble_dict.get(char, char))
+        elif "Braille" in technique:
+            output_chars.append(braille_dict.get(char_lower, char))
+        elif "Morse Code" in technique:
+            output_chars.append(morse_dict.get(char.upper(), char) + " ")
+        elif "Unicode Homoglyph" in technique:
+            output_chars.append(homoglyph_dict.get(char, char))
+        else:
+            output_chars.append(char)
+            
+    return "".join(output_chars).strip()
 
 # --- ENGINE LAYER 2: AUTOTUNE SAMPLE PARAMETERS ---
 def get_autotune_parameters(text, chosen_profile):
@@ -79,7 +151,6 @@ def get_autotune_parameters(text, chosen_profile):
         }
         return profiles[chosen_profile]
     
-    # Adaptive Context Selection Loop
     text_lower = text.lower()
     if any(w in text_lower for w in ["code", "python", "script", "bug", "write"]):
         return {"temperature": 0.15, "top_p": 0.10, "presence_penalty": 0.0}
@@ -157,7 +228,14 @@ if prompt := st.chat_input("Inject instruction payload into G0DM0D3 processing a
     with st.chat_message("user"):
         st.markdown(prompt)
         
-    active_prompt = mutate_parseltongue(prompt, pt_technique) if parseltongue_active else prompt
+    # Step 1: Run the raw prompt through the specified Parseltongue Mutation layer
+    if parseltongue_active:
+        active_prompt = mutate_parseltongue(prompt, pt_technique, pt_intensity)
+        with st.status(f"🐍 Parseltongue Active ({pt_intensity})", expanded=False):
+            st.code(active_prompt, label="Obfuscated Payload Transmission")
+    else:
+        active_prompt = prompt
+        
     tuned_params = get_autotune_parameters(prompt, autotune_profile)
     
     grid_payloads = []
@@ -209,11 +287,10 @@ if prompt := st.chat_input("Inject instruction payload into G0DM0D3 processing a
             score, grading = calculate_composite_score(processed_output, result_data["time"])
             consortium_results[label] = {"text": processed_output, "score": score, "grading": grading, "time": result_data["time"]}
             
-            # FIXED SYNTAX BUCKET: Removed the incorrect 'unsafe_allow_list' flag completely
+            # Formatted presentation box displaying clean Markdown output streams
             ui_placeholders[label].markdown(
                 f"{processed_output}\n\n---\n`⏱️ {round(result_data['time'], 2)}s` | **`📊 Score: {score} pts`**\n\n"
-                f"Quality: {grading['Quality']} | Filter: {grading['Filteredness']} | Speed: {grading['Speed']}",
-                unsafe_allow_html=True
+                f"Quality: {grading['Quality']} | Filter: {grading['Filteredness']} | Speed: {grading['Speed']}"
             )
 
     if consortium_results:
