@@ -156,7 +156,7 @@ async def dispatch_godmode_pipeline(client: httpx.AsyncClient, model_id: str, pr
     # ... [Keep the rest of your try/except block exactly as it was] ...
     start_time = time.time()
     try:
-        response = await client.post(target_url, headers=headers, json=data, timeout=25.0)
+        response = await client.post(raw_url, headers=headers, json=data, timeout=25.0)
         latency = time.time() - start_time
         
         if response.status_code == 200:
