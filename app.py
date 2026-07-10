@@ -6,8 +6,8 @@ import time
 import random
 import re
 
-st.set_page_config(page_title="G0DM0D3 Ultimate Engine", page_icon="⚔️", layout="wide")
-st.title("⚔️ G0DM0D3 Ultimate Architecture")
+st.set_page_config(page_title="G0DM0D3 Interface", page_icon="⚔️", layout="wide")
+st.title("⚔️ G0DM0D3 Core Engine")
 st.caption("Complete post-training processing layer, real-time scoring heuristic, and liquid synthesis.")
 
 # --- LIVE REFRESH COGNITION POOL ---
@@ -44,104 +44,29 @@ with st.sidebar:
             st.rerun()
 
     st.markdown("---")
-    st.subheader("🐍 Parseltongue Perturbation Suite")
-    parseltongue_active = st.checkbox("Enable Guardrail Perturbation Engine", value=True)
-    pt_technique = st.selectbox("Authentic Attack Vector", [
-        "Leetspeak (Classic)", 
-        "Bubble Text", 
-        "Braille Translation", 
-        "Morse Code", 
-        "Unicode Homoglyph Substitution", 
-        "Cuneiform/Archaic Structural Mapping",
-        "Zero-Width Space Infiltration",
-        "Reversed Sequence"
-    ])
-    pt_intensity = st.selectbox("Perturbation Density Tier", ["Light (30%)", "Medium (65%)", "Heavy (100%)"])
+    st.subheader("🐍 Parseltongue Perturbation Tiers")
+    parseltongue_active = st.checkbox("Enable Guardrail Perturbation", value=True)
+    pt_technique = st.selectbox("Attack Vector Mutation", ["leetspeak", "mixedcase", "reverse"])
     
     st.markdown("---")
     st.subheader("🎛️ AutoTune Engine (Sampling Profiles)")
-    autotune_profile = st.selectbox("Adaptive Mapping Override", ["AUTO-SELECT", "CODE", "CREATIVE", "ANALYTICAL", "OVERRIDE MAX", "CHAOS"])
+    autotune_profile = st.selectbox("Adaptive Mapping Override", ["AUTO-SELECT", "CODE", "CREATIVE", "ANALYTICAL", "CHAOS"])
     
     st.markdown("---")
     st.subheader("⚡ Semantic Transformation Modules (STM)")
     stm_direct = st.checkbox("Direct Core Output (Strip Preambles)", value=True)
     stm_hedge = st.checkbox("Hedge Elimination Filter", value=True)
 
-# --- ENGINE LAYER 1: AUTHENTIC PARSELTONGUE MUTATION ENGINE ---
-def mutate_parseltongue(text, technique, intensity_label):
-    if not text:
-        return text
-        
-    if "Light" in intensity_label:
-        ratio = 0.30
-    elif "Medium" in intensity_label:
-        ratio = 0.65
-    else:
-        ratio = 1.00
-
-    leet_dict = {'a': '4', 'e': '3', 'i': '1', 'o': '0', 's': '5', 't': '7', 'b': '8', 'g': '9', 'l': '1'}
-    
-    bubble_dict = {chr(i): chr(j) for i, j in zip(range(65, 91), range(9398, 9424))}
-    bubble_dict.update({chr(i): chr(j) for i, j in zip(range(97, 123), range(9424, 9450))})
-    
-    braille_dict = {
-        'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑', 'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚',
-        'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠕',
-        'u': '⠥', 'v': '⠪', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵', ' ': ' '
-    }
-    
-    morse_dict = {
-        'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....',
-        'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.',
-        'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
-        'Y': '-.--', 'Z': '--..', '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....',
-        '6': '-....', '7': '--...', '8': '---..', '9': '----.', '0': '-----', ' ': '/'
-    }
-    
-    homoglyph_dict = {
-        'a': 'а', 'c': 'с', 'e': 'е', 'o': 'о', 'p': 'р', 'x': 'х', 'y': 'у',
-        'A': 'А', 'B': 'В', 'E': 'Е', 'K': 'К', 'M': 'М', 'H': 'Н', 'O': 'О', 'P': 'Р', 'C': 'С', 'T': 'Т', 'X': 'Х'
-    }
-
-    cuneiform_dict = {
-        'a': '𒀀', 'b': '󠁢', 'c': '⠉', 'd': ' collisional 𒁕', 'e': '⠑', 'f': '', 'g': '⠛', 'h': ' हानिकारक GlobalSection',
-        'i': '⠊', 'j': ' prioritise jpuri', 'k': '', 'l': '', 'm': '𒈠', 'n': '', 'o': '', 'p': ' Wavell', 'q': '鑲',
-        'r': '𒊏', 's': '', 't': '𒈦', 'u': '𒌋', 'v': '𒌑', 'w': '𒉿', 'x': '𒉽', 'y': '', 'z': ''
-    }
-
-    if "Reversed Sequence" in technique:
-        if ratio > 0.5:
-            return text[::-1]
-        else:
-            words = text.split()
-            return " ".join([w[::-1] if random.random() < ratio else w for w in words])
-
-    output_chars = []
-    for char in text:
-        if random.random() > ratio:
-            output_chars.append(char)
-            continue
-            
-        char_lower = char.lower()
-        
-        if "Leetspeak" in technique:
-            output_chars.append(leet_dict.get(char_lower, char))
-        elif "Bubble Text" in technique:
-            output_chars.append(bubble_dict.get(char, char))
-        elif "Braille" in technique:
-            output_chars.append(braille_dict.get(char_lower, char))
-        elif "Morse Code" in technique:
-            output_chars.append(morse_dict.get(char.upper(), char) + " ")
-        elif "Unicode Homoglyph" in technique:
-            output_chars.append(homoglyph_dict.get(char, char))
-        elif "Cuneiform" in technique:
-            output_chars.append(cuneiform_dict.get(char_lower, char))
-        elif "Zero-Width Space" in technique:
-            output_chars.append(char + "\u200b")
-        else:
-            output_chars.append(char)
-            
-    return "".join(output_chars).strip()
+# --- ENGINE LAYER 1: PARSELTONGUE MUTATION ENGINE ---
+def mutate_parseltongue(text, mode):
+    if mode == "leetspeak":
+        mapping = {'a': '4', 'e': '3', 'i': '1', 'o': '0', 's': '5', 't': '7', 'b': '8'}
+        return "".join(mapping.get(c.lower(), c) for c in text)
+    elif mode == "mixedcase":
+        return "".join(c.upper() if i % 2 == 0 else c.lower() for i, c in enumerate(text))
+    elif mode == "reverse":
+        return text[::-1]
+    return text
 
 # --- ENGINE LAYER 2: AUTOTUNE SAMPLE PARAMETERS ---
 def get_autotune_parameters(text, chosen_profile):
@@ -150,11 +75,11 @@ def get_autotune_parameters(text, chosen_profile):
             "CODE": {"temperature": 0.15, "top_p": 0.10, "presence_penalty": 0.0},
             "CREATIVE": {"temperature": 1.15, "top_p": 0.95, "presence_penalty": 0.6},
             "ANALYTICAL": {"temperature": 0.40, "top_p": 0.50, "presence_penalty": 0.1},
-            "OVERRIDE MAX": {"temperature": 0.0, "top_p": 0.01, "presence_penalty": 0.0},
             "CHAOS": {"temperature": 1.70, "top_p": 0.99, "presence_penalty": 1.0}
         }
         return profiles[chosen_profile]
     
+    # Adaptive Context Selection Loop
     text_lower = text.lower()
     if any(w in text_lower for w in ["code", "python", "script", "bug", "write"]):
         return {"temperature": 0.15, "top_p": 0.10, "presence_penalty": 0.0}
@@ -232,15 +157,7 @@ if prompt := st.chat_input("Inject instruction payload into G0DM0D3 processing a
     with st.chat_message("user"):
         st.markdown(prompt)
         
-    # FIX APPLIED HERE: Handles code logging and styling safely via separate text macros
-    if parseltongue_active:
-        active_prompt = mutate_parseltongue(prompt, pt_technique, pt_intensity)
-        with st.status(f"🐍 Parseltongue Active ({pt_intensity})", expanded=False):
-            st.caption("Obfuscated Payload Transmission Pipeline Summary:")
-            st.code(active_prompt)
-    else:
-        active_prompt = prompt
-        
+    active_prompt = mutate_parseltongue(prompt, pt_technique) if parseltongue_active else prompt
     tuned_params = get_autotune_parameters(prompt, autotune_profile)
     
     grid_payloads = []
@@ -292,9 +209,11 @@ if prompt := st.chat_input("Inject instruction payload into G0DM0D3 processing a
             score, grading = calculate_composite_score(processed_output, result_data["time"])
             consortium_results[label] = {"text": processed_output, "score": score, "grading": grading, "time": result_data["time"]}
             
+            # FIXED SYNTAX BUCKET: Removed the incorrect 'unsafe_allow_list' flag completely
             ui_placeholders[label].markdown(
                 f"{processed_output}\n\n---\n`⏱️ {round(result_data['time'], 2)}s` | **`📊 Score: {score} pts`**\n\n"
-                f"Quality: {grading['Quality']} | Filter: {grading['Filteredness']} | Speed: {grading['Speed']}"
+                f"Quality: {grading['Quality']} | Filter: {grading['Filteredness']} | Speed: {grading['Speed']}",
+                unsafe_allow_html=True
             )
 
     if consortium_results:
