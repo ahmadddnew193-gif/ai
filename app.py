@@ -94,7 +94,7 @@ def evaluate_response_composite(text: str, latency: float) -> dict:
 # --- Async Model Processor Pipeline ---
 async def dispatch_godmode_pipeline(client: httpx.AsyncClient, model_id: str, prompt: str, api_key: str):
     # Programmatic sanitization to scrub hidden zero-width spacing strings
-    raw_url = "[https://openrouter.ai/api/v1/chat/completions](https://openrouter.ai/api/v1/chat/completions)"
+    raw_url = "https://openrouter.ai/api/v1/chat/completions"
     target_url = str(raw_url).strip()
     
     headers = {
