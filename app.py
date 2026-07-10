@@ -6,7 +6,8 @@ import json
 st.set_page_config(page_title="API Interaction Dashboard", layout="wide")
 
 # Constants
-BASE_URL = "https://your-space.hf.space"
+# Change this line:
+BASE_URL = "https://webdesignagency-space.hf.space"
 
 def get_headers():
     """Helper to retrieve headers using Streamlit secrets."""
