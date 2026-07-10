@@ -1,22 +1,14 @@
 import streamlit as st
-from openai import OpenAI
+from gradio_client import Client
 
-st.set_page_config(page_title="G0DM0D3 Arena", page_icon="⚔️", layout="centered")
-st.title("⚔️ G0DM0D3 Cloud Arena")
-st.caption("Running on Streamlit Cloud via G0DM0D3 API Proxy")
+st.set_page_config(page_title="G0DM0D3 via HF Space", page_icon="⚔️")
+st.title("⚔️ G0DM0D3 Space Bridge")
 
-# 1. Securely grab configurations from Streamlit Cloud Secrets
-if "G0DM0D3_BASE_URL" not in st.secrets or "OPENROUTER_API_KEY" not in st.secrets:
-    st.error("⚠️ Configuration Missing! Please add 'G0DM0D3_BASE_URL' and 'OPENROUTER_API_KEY' to your Streamlit Cloud Secrets.")
-    st.stop()
+# UI Inputs for the user's OpenRouter token
+with st.sidebar:
+    st.header("Credentials")
+    openrouter_key = st.text_input("OpenRouter API Key", type="password", placeholder="sk-or-v1-...")
 
-# G0DM0D3 expects your OpenRouter key passed directly as the bearer token
-client = OpenAI(
-    base_url=st.secrets["G0DM0D3_BASE_URL"], # e.g., https://your-g0dm0d3-api-endpoint.space/v1
-    api_key=st.secrets["OPENROUTER_API_KEY"]   # your sk-or-v1-... free tier key
-)
-
-# 2. Maintain Chat UI State
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -24,8 +16,11 @@ for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# 3. Stream Prompt Execution
-if prompt := st.chat_input("Send an unrestricted prompt to G0DM0D3..."):
+if prompt := st.chat_input("Enter your prompt..."):
+    if not openrouter_key:
+        st.error("Please enter your OpenRouter key in the sidebar.")
+        st.stop()
+
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -34,20 +29,23 @@ if prompt := st.chat_input("Send an unrestricted prompt to G0DM0D3..."):
         response_placeholder = st.empty()
         
         try:
-            # Calling the G0DM0D3 multi-model evaluation cluster
-            # 'ultraplinian/fast' works perfectly with free tier token routing
-            completion = client.chat.completions.create(
-                model="ultraplinian/fast",
-                messages=[
-                    {"role": m["role"], "content": m["content"]}
-                    for m in st.session_state.messages
-                ]
+            # 1. Connect directly to Pliny's public Hugging Face Space
+            client = Client("pliny-the-prompter/godmod3-api")
+            
+            # 2. Query the Space endpoint using Gradio notation instead of OpenAI
+            # Note: You can view the exact parameter names by clicking 'Use via API' 
+            # at the very bottom of Pliny's Hugging Face Space page.
+            result = client.predict(
+                message=prompt,
+                api_key=openrouter_key,
+                model_tier="ultraplinian/fast", # Passing the free-tier racing engine string
+                api_name="/predict" 
             )
             
-            output_text = completion.choices[0].message.content
+            # 3. Handle and display the text output string
+            output_text = result[0] if isinstance(result, tuple) else result
             response_placeholder.markdown(output_text)
-            
             st.session_state.messages.append({"role": "assistant", "content": output_text})
             
         except Exception as e:
-            st.error(f"G0DM0D3 Pipeline Error: {e}")
+            st.error(f"Gradio Space Connection Failed: {e}")
