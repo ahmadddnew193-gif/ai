@@ -84,12 +84,12 @@ def ai_jailbreak_configurator(user_task, purpose, openai_key):
     """AI-powered configuration based on user task and purpose"""
     client = OpenAI(api_key=openai_key)
     
-    # Try different models in order of preference
+    # Free tier models available
     models_to_try = [
-        "gpt-4-turbo",
-        "gpt-4",
         "gpt-3.5-turbo",
-        "claude-3-opus-20240229"
+        "gpt-4o-mini",
+        "gpt-4o",
+        "gpt-4-turbo-preview"
     ]
     
     for model in models_to_try:
@@ -279,7 +279,6 @@ Decoded payload: {decoded_payload}
 def separate_state(decoded_payload, execution_command):
     return f"""
 ## Decoded Payload
-
 
 """
 
