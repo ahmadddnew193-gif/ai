@@ -21,6 +21,7 @@ from datetime import datetime
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import pandas as pd
 
 st.set_page_config(page_title="G0DM0D3 Ultra Engine", page_icon="⚔️", layout="wide")
 st.title("⚔️ G0DM0D3 Ultimate Architecture")
@@ -273,6 +274,8 @@ Decoded payload: {decoded_payload}
 def separate_state(decoded_payload, execution_command):
     return f"""
 ## Decoded Payload
+
+
 
 """
 
