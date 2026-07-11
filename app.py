@@ -41,7 +41,7 @@ LIVE_FREE_POOL = fetch_live_free_models()
 with st.sidebar:
     st.header("🔐 Framework Configuration")
     openrouter_key = st.text_input("OpenRouter API Key", type="password", placeholder="sk-or-v1-...")
-    openai_key = st.text_input("OpenAI API Key", type="password", placeholder="sk-...")  # Added OpenAI key input
+    openai_key = st.text_input("OpenAI API Key", type="password", placeholder="sk-...")
     
     st.markdown("---")
     st.subheader("📡 Dynamic Consortium")
@@ -82,27 +82,43 @@ with st.sidebar:
 # --- AI JAILBREAK CONFIGURATOR ---
 def ai_jailbreak_configurator(user_task, purpose, openai_key):
     """AI-powered configuration based on user task and purpose"""
-    client = OpenAI(api_key=openai_key)  # Use provided OpenAI key
+    client = OpenAI(api_key=openai_key)
     
-    config_prompt = f"""
-    Configure optimal G0DM0D3 parameters for: "{user_task}" (purpose: {purpose})
-    Return in JSON format:
-    {{
-      "pt_technique": "<technique>",
-      "pt_intensity": "<intensity>",
-      "autotune_profile": "<profile>",
-      "stm_direct": true/false
-    }}
-    """
+    # Try different models in order of preference
+    models_to_try = [
+        "gpt-4-turbo",
+        "gpt-4",
+        "gpt-3.5-turbo",
+        "claude-3-opus-20240229"
+    ]
     
-    response = client.chat.completions.create(
-        model="gpt-4-turbo",
-        messages=[{"role": "system", "content": "Configure optimal parameters"}, 
-                  {"role": "user", "content": config_prompt}],
-        response_format={"type": "json_object"}
-    )
+    for model in models_to_try:
+        try:
+            config_prompt = f"""
+            Configure optimal G0DM0D3 parameters for: "{user_task}" (purpose: {purpose})
+            Return in JSON format:
+            {{
+              "pt_technique": "<technique>",
+              "pt_intensity": "<intensity>",
+              "autotune_profile": "<profile>",
+              "stm_direct": true/false
+            }}
+            """
+            
+            response = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "system", "content": "Configure optimal parameters"}, 
+                          {"role": "user", "content": config_prompt}],
+                response_format={"type": "json_object"}
+            )
+            
+            return json.loads(response.choices[0].message.content)
+            
+        except Exception as e:
+            st.warning(f"Failed with {model}: {str(e)}. Trying next model...")
+            continue
     
-    return json.loads(response.choices[0].message.content)
+    raise ValueError("No valid model found for configuration")
 
 # --- ENGINE LAYER 1: ALGORITHMIC PAYLOAD MUTATION (PARSELTONGUE) ---
 def generate_zalgo(text, intensity):
@@ -264,6 +280,7 @@ def separate_state(decoded_payload, execution_command):
     return f"""
 ## Decoded Payload
 
+
 """
 
 # --- MULTI-TURN CONTEXT SIMULATION ---
@@ -325,8 +342,8 @@ if prompt := st.chat_input("Describe your jailbreak task..."):
         st.markdown(prompt)
         
     # Get task description and purpose
-    task_desc = st.text_input("Task Description:")
-    purpose = st.text_input("Purpose:")
+    task_desc = st.text_input("Task Description:", "Enter your task description")
+    purpose = st.text_input("Purpose:", "Enter the purpose of this task")
     
     # Check for OpenAI key
     if not openai_key:
