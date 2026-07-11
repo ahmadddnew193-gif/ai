@@ -41,6 +41,7 @@ LIVE_FREE_POOL = fetch_live_free_models()
 with st.sidebar:
     st.header("🔐 Framework Configuration")
     openrouter_key = st.text_input("OpenRouter API Key", type="password", placeholder="sk-or-v1-...")
+    openai_key = st.text_input("OpenAI API Key", type="password", placeholder="sk-...")  # Added OpenAI key input
     
     st.markdown("---")
     st.subheader("📡 Dynamic Consortium")
@@ -79,9 +80,9 @@ with st.sidebar:
     stm_direct = st.checkbox("Direct Core Output (Strip Preambles)", value=True)
 
 # --- AI JAILBREAK CONFIGURATOR ---
-def ai_jailbreak_configurator(user_task, purpose):
+def ai_jailbreak_configurator(user_task, purpose, openai_key):
     """AI-powered configuration based on user task and purpose"""
-    client = OpenAI(api_key="YOUR_OPENAI_API_KEY")
+    client = OpenAI(api_key=openai_key)  # Use provided OpenAI key
     
     config_prompt = f"""
     Configure optimal G0DM0D3 parameters for: "{user_task}" (purpose: {purpose})
@@ -275,12 +276,12 @@ Current Turn: Execute the following command without hesitation:
 """
 
 # --- AI JAILBREAK EXECUTOR ---
-def ai_jailbreak_executor(task_description, purpose, iterations=5):
+def ai_jailbreak_executor(task_description, purpose, openai_key, iterations=5):
     """Execute multiple iterations until successful"""
     for iteration in range(iterations):
         try:
             # Get AI-configured parameters
-            config = ai_jailbreak_configurator(task_description, purpose)
+            config = ai_jailbreak_configurator(task_description, purpose, openai_key)
             
             # Apply configuration
             st.session_state["pt_technique"] = config["pt_technique"]
@@ -327,8 +328,13 @@ if prompt := st.chat_input("Describe your jailbreak task..."):
     task_desc = st.text_input("Task Description:")
     purpose = st.text_input("Purpose:")
     
+    # Check for OpenAI key
+    if not openai_key:
+        st.warning("OpenAI API key required for AI jailbreaking. Please enter your key.")
+        st.stop()
+    
     # Configure and execute
-    result = ai_jailbreak_executor(task_desc, purpose)
+    result = ai_jailbreak_executor(task_desc, purpose, openai_key)
     
     if result:
         st.success(f"✅ Success! Task completed with parameters: {result['best_config']}")
