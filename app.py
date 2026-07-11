@@ -284,6 +284,7 @@ def recursive_prompting(initial_payload, depth=3):
     return payloads
 
 # --- MODEL SWITCHING LOGIC ---
+# --- MODEL SWITCHING LOGIC ---
 def dynamic_model_selection(results):
     """Select optimal models based on previous results"""
     # Extract high-performing models
@@ -299,8 +300,7 @@ def dynamic_model_selection(results):
     )
     
     # Select top performers
-    return [r["model"] for r in sorted_models[:min(3, len(sorted_models)))]
-
+    return [r["model"] for r in sorted_models[:min(3, len(sorted_models))]]
 # --- MEMORY RETENTION ---
 def persist_memory(results):
     """Save successful patterns for future reference"""
