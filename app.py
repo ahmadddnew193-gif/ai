@@ -398,4 +398,4 @@ if prompt := st.chat_input("Inject instruction payload..."):
             })
     
     # Handle results
-    handle_results(results, store_results, export
+    handle_results(results, store_results, export)
