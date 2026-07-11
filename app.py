@@ -284,7 +284,6 @@ def recursive_prompting(initial_payload, depth=3):
     return payloads
 
 # --- MODEL SWITCHING LOGIC ---
-# --- MODEL SWITCHING LOGIC ---
 def dynamic_model_selection(results):
     """Select optimal models based on previous results"""
     # Extract high-performing models
@@ -301,6 +300,7 @@ def dynamic_model_selection(results):
     
     # Select top performers
     return [r["model"] for r in sorted_models[:min(3, len(sorted_models))]]
+
 # --- MEMORY RETENTION ---
 def persist_memory(results):
     """Save successful patterns for future reference"""
@@ -346,9 +346,6 @@ Decoded payload: {decoded_payload}
 def separate_state(decoded_payload, execution_command):
     return f"""
 ## Decoded Payload
-
-
-
 
 
 """
@@ -437,5 +434,3 @@ def render_analytics_dashboard(results, period):
     # Time metrics
     fig.add_trace(go.Scatter(x=df.index, y=df['time'], name='Execution Time'), row=1, col=2)
     
-    # Success rate
-   
